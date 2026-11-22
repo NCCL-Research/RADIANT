@@ -11,7 +11,7 @@ def test_student_attempt_requires_identifiers_and_prompt() -> None:
 
 
 def test_student_attempt_rejects_non_string_required_text() -> None:
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         StudentAttempt("task-1", "attempt-1", "Prompt", None, "work")  # type: ignore[arg-type]
 
 
@@ -48,5 +48,5 @@ def test_counterfactual_pair_requires_distinct_attempts() -> None:
 def test_counterfactual_pair_requires_boolean_expectation() -> None:
     first = Diagnosis("baseline", "sign_error", 0.8)
     second = Diagnosis("changed", "conceptual_error", 0.8)
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         CounterfactualPair("pair-1", first, second, expected_change=1)  # type: ignore[arg-type]
