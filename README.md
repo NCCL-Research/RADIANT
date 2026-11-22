@@ -22,11 +22,13 @@ The final taxonomy, hypotheses, sampling plan, annotation rubric, and confirmato
 ```text
 src/radiant/
   schema.py       Typed records for attempts, diagnoses, and paired conditions
-  metrics.py      Dependency-free baseline metrics
+  metrics.py      Dependency-free metrics, including confusion matrices
+  evaluation.py   Pair-aware metrics operating on typed diagnosis records
 tests/
   test_package.py
   test_schema.py
   test_metrics.py
+  test_evaluation.py
 docs/
   DATA_AND_LABEL_SCHEMA.md
   METRIC_DEFINITIONS.md
