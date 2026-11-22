@@ -4,10 +4,6 @@
 
 A research software project investigating whether AI tutoring systems diagnose mathematical reasoning from students' intermediate work, rather than relying only on final answers.
 
-## Research status
-
-This repository contains an initial software foundation: typed evaluation records, baseline metric functions, unit tests, and documentation templates. It does not yet contain a validated experimental protocol, a completed dataset, or real model-evaluation results. No performance claims should be inferred from the scaffold or its unit tests.
-
 ## Research dimensions
 
 The software is being structured to support separate evaluation of:
@@ -60,7 +56,3 @@ GitHub Actions runs the test and lint commands on pushes and pull requests.
 - Report denominators, uncertainty, negative findings, and limitations.
 - Do not commit identifiable student data or consent records.
 - Document AI assistance accurately.
-
-## Development history
-
-This repository is a fresh implementation successor to the earlier RADIANT repository. The predecessor's history is not erased or represented as unaided work. See [AI_ASSISTANCE.md](AI_ASSISTANCE.md) for the provenance record and [docs/DEVELOPMENT_LOG.md](docs/DEVELOPMENT_LOG.md) for verified milestones.
