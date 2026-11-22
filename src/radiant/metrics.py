@@ -71,6 +71,35 @@ def counterfactual_response_rate(
     ) / len(observed_change)
 
 
+
+def confusion_matrix(
+    y_true: Sequence[str],
+    y_pred: Sequence[str],
+    labels: Sequence[str] | None = None,
+) -> dict[str, dict[str, int]]:
+    """Return counts indexed by true label, then predicted label.
+
+    If labels is supplied, its order is preserved and observations outside
+    that label set are rejected. Otherwise, the sorted union is used.
+    """
+    _validate_equal_nonempty(y_true, y_pred)
+    observed = (*y_true, *y_pred)
+    if any(not isinstance(value, str) or not value.strip() for value in observed):
+        raise ValueError("labels must contain non-empty strings")
+    selected = list(labels) if labels is not None else sorted(set(observed))
+    if not selected or len(selected) != len(set(selected)):
+        raise ValueError("labels must be non-empty and unique")
+    if any(not isinstance(value, str) or not value.strip() for value in selected):
+        raise ValueError("labels must contain non-empty strings")
+    allowed = set(selected)
+    if not set(y_true).issubset(allowed) or not set(y_pred).issubset(allowed):
+        raise ValueError("observed labels must be included in labels")
+    matrix = {truth: {pred: 0 for pred in selected} for truth in selected}
+    for truth, pred in zip(y_true, y_pred, strict=True):
+        matrix[truth][pred] += 1
+    return matrix
+
+
 def _validate_equal_nonempty(first: Sequence[object], second: Sequence[object]) -> None:
     if not first or not second:
         raise ValueError("input sequences must not be empty")
