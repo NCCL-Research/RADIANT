@@ -33,7 +33,6 @@ docs/
   EXPERIMENT_LOG_TEMPLATE.md
   RESEARCH_PROTOCOL_TEMPLATE.md
   DEVELOPMENT_LOG.md
-AI_ASSISTANCE.md  Development provenance and assistance record
 ```
 
 ## Setup
@@ -55,4 +54,3 @@ GitHub Actions runs the test and lint commands on pushes and pull requests.
 - Record dataset provenance, permissions, annotation decisions, exclusions, and deviations.
 - Report denominators, uncertainty, negative findings, and limitations.
 - Do not commit identifiable student data or consent records.
-- Document AI assistance accurately.
