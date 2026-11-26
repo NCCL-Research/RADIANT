@@ -19,6 +19,7 @@ _ALLOWED_FIELDS = {
     "final_answer",
     "intermediate_work",
     "reference_label",
+    "split_group_id",
 }
 
 
@@ -47,7 +48,7 @@ def load_attempts_jsonl(path: str | Path) -> list[StudentAttempt]:
                 names = ", ".join(sorted(unknown))
                 raise ValueError(f"{source}:{line_number}: unknown field(s): {names}")
 
-            missing = _ALLOWED_FIELDS - {"reference_label"} - set(record)
+            missing = _ALLOWED_FIELDS - {"reference_label", "split_group_id"} - set(record)
             if missing:
                 names = ", ".join(sorted(missing))
                 raise ValueError(f"{source}:{line_number}: missing required field(s): {names}")
