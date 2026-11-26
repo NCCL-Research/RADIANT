@@ -46,4 +46,4 @@ Before calculating model metrics, specify:
 4. Whether annotators work independently and how disagreements are resolved.
 5. How annotator agreement will be reported.
 
-Do not treat a model-generated label as ground truth.
+Evidence spans must be exact substrings of intermediate_work; they record traceable support, not proof that the reference label is correct. Do not treat a model-generated label as ground truth.
