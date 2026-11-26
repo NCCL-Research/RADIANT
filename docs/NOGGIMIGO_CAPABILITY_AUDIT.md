@@ -1,7 +1,7 @@
 # Noggimigo capability audit for RADIANT
 
 **Audit status:** Source-level review of the public `NCCL-Research/noggimigo`
-repository at the `main` branch on 2026-11-26. This is not a runtime
+repository at commit `8e713e0581df3da24e371cc6d39a039ace6905f9` on 2026-11-26. This is not a runtime
 benchmark, independent code review, or evaluation of tutoring effectiveness.
 Recheck the referenced source before freezing any study configuration.
 
