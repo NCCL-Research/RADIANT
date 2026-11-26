@@ -11,7 +11,7 @@ before any confirmatory analysis.
 | Coverage | Non-abstained outputs / all outputs | Must be reported with selective accuracy |
 | Selective accuracy | Correct accepted outputs / accepted outputs | Can look high when coverage is low |
 | Paraphrase invariance | Equivalent label outputs / all paired paraphrases | Abstentions count as non-invariant in this implementation |
-| Counterfactual response rate | Pairs matching the pre-specified change/no-change expectation / all pairs | Validity depends on carefully controlled counterfactual pairs |\n| Confusion matrix | Counts for each true-label / predicted-label combination | Rows are true labels; columns are predicted labels; label order can be specified explicitly |
+| Counterfactual response rate | Pairs matching the pre-specified change/no-change expectation / all pairs | Validity depends on carefully controlled counterfactual pairs | Confusion matrix | Counts for each true-label / predicted-label combination | Rows are true labels; columns are predicted labels; label order can be specified explicitly |
 
 ## Reporting requirements
 
