@@ -24,7 +24,9 @@ infer intermediate reasoning from the final answer.
 
 Model outputs should be stored separately from reference annotations. A
 Diagnosis record contains the predicted label, optional confidence,
-evidence spans, explanation, abstention state, and optional run metadata.
+evidence spans, explanation, abstention state, and optional run metadata. A
+missing diagnosis label must be represented as an explicit abstention; a
+non-abstaining diagnosis must carry a label.
 
 ## Data protection
 
