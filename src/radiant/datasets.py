@@ -6,9 +6,9 @@ scientific correctness of reference labels or the validity of case pairs.
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable
 from dataclasses import asdict
 from pathlib import Path
-from typing import Iterable
 
 from radiant.schema import StudentAttempt
 
@@ -40,7 +40,7 @@ def load_attempts_jsonl(path: str | Path) -> list[StudentAttempt]:
                 ) from exc
 
             if not isinstance(record, dict):
-                raise ValueError(f"{source}:{line_number}: each record must be a JSON object")
+                raise TypeError(f"{source}:{line_number}: each record must be a JSON object")
 
             unknown = set(record) - _ALLOWED_FIELDS
             if unknown:
