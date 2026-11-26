@@ -13,13 +13,13 @@ from radiant.metrics import (
     paraphrase_invariance,
     selective_accuracy,
 )
-from radiant.split_validation import validate_split_assignments
 from radiant.schema import (
     CounterfactualPair,
     Diagnosis,
     ParaphrasePair,
     StudentAttempt,
 )
+from radiant.split_validation import validate_split_assignments
 
 __version__ = "0.1.0"
 
