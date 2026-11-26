@@ -26,6 +26,7 @@ class StudentAttempt:
     final_answer: str
     intermediate_work: str
     reference_label: str | None = None
+    split_group_id: str | None = None
 
     def __post_init__(self) -> None:
         for field_name in ("task_id", "attempt_id", "prompt"):
@@ -35,6 +36,8 @@ class StudentAttempt:
                 raise TypeError(f"{field_name} must be a string")
         if self.reference_label is not None:
             _require_nonblank(self.reference_label, "reference_label")
+        if self.split_group_id is not None:
+            _require_nonblank(self.split_group_id, "split_group_id")
 
 
 @dataclass(frozen=True, slots=True)
