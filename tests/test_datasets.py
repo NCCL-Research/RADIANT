@@ -95,5 +95,5 @@ def test_loader_rejects_non_array_reference_evidence_spans(tmp_path) -> None:
     }
     path = tmp_path / "bad-evidence.jsonl"
     path.write_text(json.dumps(record) + "\n", encoding="utf-8")
-    with pytest.raises(ValueError, match="reference_evidence_spans"):
+    with pytest.raises(TypeError, match="reference_evidence_spans"):
         load_attempts_jsonl(path)
