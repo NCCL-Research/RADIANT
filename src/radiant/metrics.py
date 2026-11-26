@@ -107,3 +107,40 @@ def _validate_equal_nonempty(first: Sequence[object], second: Sequence[object]) 
         raise ValueError("input sequences must not be empty")
     if len(first) != len(second):
         raise ValueError("input sequences must have equal lengths")
+
+
+def per_class_metrics(
+    y_true: Sequence[str],
+    y_pred: Sequence[str],
+    labels: Sequence[str] | None = None,
+) -> dict[str, dict[str, float | int]]:
+    """Return precision, recall, F1, and support for each requested label."""
+    matrix = confusion_matrix(y_true, y_pred, labels=labels)
+    results: dict[str, dict[str, float | int]] = {}
+    for label, row in matrix.items():
+        true_positive = row[label]
+        false_positive = sum(
+            matrix[other][label] for other in matrix if other != label
+        )
+        false_negative = sum(
+            count for predicted, count in row.items() if predicted != label
+        )
+        support = sum(row.values())
+        precision_denominator = true_positive + false_positive
+        recall_denominator = true_positive + false_negative
+        precision = (
+            true_positive / precision_denominator if precision_denominator else 0.0
+        )
+        recall = true_positive / recall_denominator if recall_denominator else 0.0
+        f1 = (
+            2 * precision * recall / (precision + recall)
+            if precision + recall
+            else 0.0
+        )
+        results[label] = {
+            "precision": precision,
+            "recall": recall,
+            "f1": f1,
+            "support": support,
+        }
+    return results
