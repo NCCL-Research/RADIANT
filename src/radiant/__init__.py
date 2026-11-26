@@ -35,7 +35,7 @@ __all__ = [
     "coverage",
     "macro_f1",
     "paraphrase_invariance",
-    "per_class_metrics",
     "paraphrase_pair_invariance",
+    "per_class_metrics",
     "selective_accuracy",
 ]
