@@ -52,6 +52,12 @@ def load_attempts_jsonl(path: str | Path) -> list[StudentAttempt]:
                 names = ", ".join(sorted(missing))
                 raise ValueError(f"{source}:{line_number}: missing required field(s): {names}")
 
+            if "reference_evidence_spans" in record:
+                spans = record["reference_evidence_spans"]
+                if not isinstance(spans, list):
+                    raise TypeError("reference_evidence_spans must be a JSON array")
+                record["reference_evidence_spans"] = tuple(spans)
+
             try:
                 attempt = StudentAttempt(**record)
             except (TypeError, ValueError) as exc:
