@@ -66,5 +66,5 @@ def test_loader_rejects_duplicate_attempt_ids(tmp_path) -> None:
 def test_loader_rejects_non_object_records(tmp_path) -> None:
     path = tmp_path / "array.jsonl"
     path.write_text('[]\n', encoding="utf-8")
-    with pytest.raises(ValueError, match="JSON object"):
+    with pytest.raises(TypeError, match="JSON object"):
         load_attempts_jsonl(path)
