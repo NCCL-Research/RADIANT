@@ -50,3 +50,21 @@ def test_counterfactual_pair_requires_boolean_expectation() -> None:
     second = Diagnosis("changed", "conceptual_error", 0.8)
     with pytest.raises(TypeError):
         CounterfactualPair("pair-1", first, second, expected_change=1)  # type: ignore[arg-type]
+
+
+def test_student_attempt_evidence_spans_must_be_exact_work_substrings() -> None:
+    attempt = StudentAttempt(
+        "task-1", "attempt-1", "Prompt", "answer", "first step; second step",
+        reference_evidence_spans=("first step", "second step"),
+    )
+    assert attempt.reference_evidence_spans == ("first step", "second step")
+    with pytest.raises(ValueError, match="must occur in intermediate_work"):
+        StudentAttempt(
+            "task-1", "attempt-2", "Prompt", "answer", "first step",
+            reference_evidence_spans=("invented evidence",),
+        )
+    with pytest.raises(ValueError, match="non-empty strings"):
+        StudentAttempt(
+            "task-1", "attempt-3", "Prompt", "answer", "work",
+            reference_evidence_spans=("",),
+        )
