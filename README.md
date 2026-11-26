@@ -4,6 +4,10 @@
 
 A research software project investigating whether AI tutoring systems diagnose mathematical reasoning from students' intermediate work, rather than relying only on final answers.
 
+## Research question
+
+When two learners give the same final answer using different reasoning, does an AI tutor diagnose them differently for the right reasons?
+
 ## Research dimensions
 
 The software is being structured to support separate evaluation of:
@@ -22,6 +26,7 @@ The final taxonomy, hypotheses, sampling plan, annotation rubric, and confirmato
 ```text
 src/radiant/
   schema.py       Typed records for attempts, diagnoses, and paired conditions
+  datasets.py     Strict JSONL loading and export for benchmark attempts
   metrics.py      Dependency-free metrics, including confusion matrices
   evaluation.py   Pair-aware metrics operating on typed diagnosis records
 tests/
@@ -29,12 +34,14 @@ tests/
   test_schema.py
   test_metrics.py
   test_evaluation.py
+  test_datasets.py
 docs/
   DATA_AND_LABEL_SCHEMA.md
   METRIC_DEFINITIONS.md
   EXPERIMENT_LOG_TEMPLATE.md
   RESEARCH_PROTOCOL_TEMPLATE.md
-  DEVELOPMENT_LOG.md
+  EXPERIMENT_DESIGN_DRAFT.md
+  IMPLEMENTATION_ROADMAP.md
 ```
 
 ## Setup
@@ -48,6 +55,16 @@ ruff check src tests
 ```
 
 GitHub Actions runs the test and lint commands on pushes and pull requests.
+
+## Current implementation status
+
+The repository contains typed research records, baseline metrics, pair-aware evaluation helpers, and JSONL dataset I/O with structural validation.
+
+The JSONL validator checks record shape, required fields, unknown fields, and duplicate attempt identifiers. It does **not** establish that a reference label is scientifically correct or that a paired manipulation is valid.
+
+The benchmark casebook, finalized reasoning taxonomy, model adapter, and real model evaluation are not yet complete. No diagnostic performance results are claimed.
+
+See [the implementation roadmap](docs/IMPLEMENTATION_ROADMAP.md) for planned milestones and research-integrity gates.
 
 ## Research integrity and data protection
 
