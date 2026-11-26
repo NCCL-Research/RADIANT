@@ -21,8 +21,9 @@ infer intermediate reasoning from the final answer.
 | final_answer | Learner's submitted final answer |
 | intermediate_work | Learner's supplied working or explanation |
 | reference_label | Protocol-defined reference diagnosis; may be absent until annotation |
+| split_group_id | Optional shared source-case ID for related variants; records without one are treated as independent for split validation |
 
-Model outputs should be stored separately from reference annotations. A
+Use the same split_group_id for an original case and every paraphrase or counterfactual derived from it. Run validate_split_assignments() before evaluation to reject groups spanning multiple splits. Model outputs should be stored separately from reference annotations. A
 Diagnosis record contains the predicted label, optional confidence,
 evidence spans, explanation, abstention state, and optional run metadata.
 
