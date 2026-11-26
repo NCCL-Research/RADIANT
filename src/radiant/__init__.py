@@ -10,6 +10,7 @@ from radiant.metrics import (
     counterfactual_response_rate,
     coverage,
     macro_f1,
+    per_class_metrics,
     paraphrase_invariance,
     selective_accuracy,
 )
@@ -33,6 +34,7 @@ __all__ = [
     "counterfactual_response_rate",
     "coverage",
     "macro_f1",
+    "per_class_metrics",
     "paraphrase_invariance",
     "paraphrase_pair_invariance",
     "selective_accuracy",
