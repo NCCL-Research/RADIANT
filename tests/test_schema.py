@@ -50,3 +50,14 @@ def test_counterfactual_pair_requires_boolean_expectation() -> None:
     second = Diagnosis("changed", "conceptual_error", 0.8)
     with pytest.raises(TypeError):
         CounterfactualPair("pair-1", first, second, expected_change=1)  # type: ignore[arg-type]
+
+
+def test_diagnosis_without_label_must_explicitly_abstain() -> None:
+    with pytest.raises(ValueError, match="must be marked as abstained"):
+        Diagnosis("attempt-1", None, None)
+
+
+def test_abstained_diagnosis_may_omit_label() -> None:
+    diagnosis = Diagnosis("attempt-1", None, None, abstained=True)
+    assert diagnosis.abstained is True
+    assert diagnosis.label is None
