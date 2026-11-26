@@ -8,7 +8,7 @@ not yet produced model-evaluation results.
 
 - [x] Define typed attempt and diagnosis records.
 - [x] Define baseline classification and pair-aware metrics.
-- [ ] Add strict JSONL dataset loading and export.
+- [x] Add strict JSONL dataset loading and export.
 - [ ] Add schema validation tests to continuous integration.
 - [ ] Document a versioned benchmark manifest and provenance fields.
 - [ ] Create a small researcher-authored pilot casebook after the label
