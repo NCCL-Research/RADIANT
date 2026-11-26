@@ -8,6 +8,7 @@ before any confirmatory analysis.
 |---|---|---|
 | Accuracy | Correct labels / all labels | Can conceal class imbalance |
 | Macro-F1 | Unweighted mean of per-class F1 | Depends on the defined label set |
+| Per-class precision, recall, F1, support | Computed separately for each requested label | Zero-denominator precision/recall/F1 values are reported as 0; always report support |
 | Coverage | Non-abstained outputs / all outputs | Must be reported with selective accuracy |
 | Selective accuracy | Correct accepted outputs / accepted outputs | Can look high when coverage is low |
 | Paraphrase invariance | Equivalent label outputs / all paired paraphrases | Abstentions count as non-invariant in this implementation |
@@ -16,7 +17,7 @@ before any confirmatory analysis.
 ## Reporting requirements
 
 - Report denominators and sample sizes with every metric.
-- Report class counts and the confusion matrix for classification tasks.
+- Report per-class precision, recall, F1, support, class counts, and the confusion matrix for classification tasks.
 - Report coverage beside selective accuracy.
 - Report results by relevant task or diagnosis subgroup where sample sizes permit.
 - Use uncertainty intervals appropriate to the sampling and pairing design.
