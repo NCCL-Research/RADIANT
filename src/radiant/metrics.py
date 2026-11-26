@@ -33,6 +33,8 @@ def coverage(abstained: Sequence[bool]) -> float:
     """Fraction of examples receiving a non-abstaining prediction."""
     if not abstained:
         raise ValueError("abstained must not be empty")
+    if any(not isinstance(value, bool) for value in abstained):
+        raise TypeError("abstained values must be booleans")
     return sum(not value for value in abstained) / len(abstained)
 
 
