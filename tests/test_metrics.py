@@ -5,8 +5,8 @@ from radiant.metrics import (
     counterfactual_response_rate,
     coverage,
     macro_f1,
-    per_class_metrics,
     paraphrase_invariance,
+    per_class_metrics,
     selective_accuracy,
 )
 
