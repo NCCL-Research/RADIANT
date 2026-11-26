@@ -26,7 +26,7 @@ def test_jsonl_round_trip(tmp_path) -> None:
 
 def test_loader_rejects_invalid_json_with_line_number(tmp_path) -> None:
     path = tmp_path / "bad.jsonl"
-    path.write_text('{"task_id": }\\n', encoding="utf-8")
+    path.write_text('{"task_id": }\n', encoding="utf-8")
     with pytest.raises(ValueError, match="bad.jsonl:1: invalid JSON"):
         load_attempts_jsonl(path)
 
@@ -41,7 +41,7 @@ def test_loader_rejects_unknown_fields(tmp_path) -> None:
         "private_student_name": "Example",
     }
     path = tmp_path / "unknown.jsonl"
-    path.write_text(json.dumps(record) + "\\n", encoding="utf-8")
+    path.write_text(json.dumps(record) + "\n", encoding="utf-8")
     with pytest.raises(ValueError, match="unknown field"):
         load_attempts_jsonl(path)
 
@@ -56,7 +56,7 @@ def test_loader_rejects_duplicate_attempt_ids(tmp_path) -> None:
         "intermediate_work": "work",
     }
     path.write_text(
-        json.dumps(record) + "\\n" + json.dumps(record) + "\\n",
+        json.dumps(record) + "\n" + json.dumps(record) + "\n",
         encoding="utf-8",
     )
     with pytest.raises(ValueError, match="duplicate attempt_id"):
@@ -65,6 +65,6 @@ def test_loader_rejects_duplicate_attempt_ids(tmp_path) -> None:
 
 def test_loader_rejects_non_object_records(tmp_path) -> None:
     path = tmp_path / "array.jsonl"
-    path.write_text('[]\\n', encoding="utf-8")
+    path.write_text('[]\n', encoding="utf-8")
     with pytest.raises(ValueError, match="JSON object"):
         load_attempts_jsonl(path)
