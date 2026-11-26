@@ -10,7 +10,7 @@ RADIANT needs labels assignable from the *observable work supplied to a system*.
 The initial literature supports analysing mathematical errors as potentially meaningful reasoning patterns, while distinguishing systematic errors from slips and recognizing that categories depend on topic and evidence:
 
 - Sleeman (1984), studying 24 students' algebra work, used categories including manipulative, parsing, clerical, and random errors. Follow-up interviews exposed misunderstandings missed by the tutoring system's initial analysis.
-- Movshovitz-Hadar, Zaslavsky, and Inbar (1987), as summarized by Schnepper and McCoy, classified errors including misused data, invalid translation from verbal to mathematical form, logically invalid inference, improper use of a definition or theorem, answering the wrong question, and basic-skill errors.
+- Movshovitz-Hadar, Zaslavsky, and Inbar (1987) report six categories in the original article abstract indexed by ERIC: misused data, misinterpreted language, logically invalid inference, distorted theorem or definition, unverified solution, and technical error. Schnepper and McCoy also discuss this classification.
 - Mathaba et al. (2024) report Grade 9 algebra patterns including conjoining, cancellation, and problem-solving errors, and distinguish slips from systematic errors.
 - Makhubele (2021) reports Grade 8 fraction errors associated with prerequisite concepts, prior knowledge, misconceptions, and misapplied rules.
 
@@ -36,6 +36,7 @@ These are candidate families for protocol development, not approved production l
 | RULE_MISAPPLICATION | A rule, property, or procedure is applied outside valid conditions or generalized to an incompatible case. | The rule use and the condition making it invalid are both visible. |
 | SYMBOL_PARSING_OR_TRANSLATION | Mathematical notation or verbal information is interpreted or translated inconsistently with the task. | A visible parse, substitution, or translation step demonstrates the mismatch. |
 | INVALID_INFERENCE_OR_STRATEGY | A conclusion does not follow from preceding statements, or the selected strategy does not address the stated problem. | The relevant premise and conclusion or strategy are visible. |
+| UNVERIFIED_OR_INCOMPLETE_SOLUTION | The work presents a result without checking a required condition, validating a candidate, or completing a necessary justification. | The task's verification requirement and the omitted or invalid check are identifiable. |
 | PROCEDURAL_TRANSFORMATION | A mathematical operation or transformation is invalid even though the underlying objects appear to be understood. | The specific invalid transformation is identifiable in the written steps. |
 | EXECUTION_OR_ARITHMETIC | The reasoning plan is plausibly appropriate, but a local computation or execution step is incorrect. | Enough preceding work is visible to distinguish a local execution error from a conceptual or rule error. |
 | TASK_MISMATCH_OR_OFF_TASK | The response solves a different problem, omits the required target, or is not responsive to the task. | The task requirement and response can be directly compared. |
@@ -110,7 +111,7 @@ Do not label confirmatory cases until these decisions are resolved in a versione
 ## 8. Source register
 
 1. Sleeman, D. (1984). *An Attempt to Understand Students' Understanding of Basic Algebra*. Stanford University, Heuristic Programming Project. ERIC ED258847. https://files.eric.ed.gov/fulltext/ED258847.pdf
-2. Movshovitz-Hadar, N., Zaslavsky, O., & Inbar, S. (1987). An empirical classification model for errors in high school mathematics. *Journal for Research in Mathematics Education*, 18(1), 3–14. https://doi.org/10.2307/749532
+2. Movshovitz-Hadar, N., Zaslavsky, O., & Inbar, S. (1987). An empirical classification model for errors in high school mathematics. *Journal for Research in Mathematics Education*, 18(1), 3–14. https://doi.org/10.2307/749532. Original article abstract and six-category summary indexed by ERIC: https://eric.ed.gov/?id=EJ348115
 3. Schnepper, L. C., & McCoy, L. P. (2013; journal issue published 2017). *Analysis of Misconceptions in High School Mathematics*. *Networks: An Online Journal for Teacher Research*, 15(1), Article 7. https://doi.org/10.4148/2470-6353.1066
 4. Makhubele, Y. E. (2021). The Analysis of Grade 8 Fractions Errors Displayed by Learners Due to Deficient Mastery of Prerequisite Concepts. *International Electronic Journal of Mathematics Education*, 16(3), em0645. https://doi.org/10.29333/iejme/11004
 5. Lee, H.-J., & Boyadzhiev, I. (2020). Underprepared College Students' Understanding of and Misconceptions with Fractions. *International Electronic Journal of Mathematics Education*, 15(3), em0583. https://doi.org/10.29333/iejme/7835
@@ -118,4 +119,4 @@ Do not label confirmatory cases until these decisions are resolved in a versione
 
 ### Source-use limitations
 
-This is a preliminary source register, not a systematic review. The 1987 classification is cited through Schnepper and McCoy; the original article must be obtained and checked before taxonomy freeze. Study populations, curricula, and task formats differ, so reported categories are not universal prevalence estimates. No numerical prevalence claims are made here.
+This is a preliminary source register, not a systematic review. The original 1987 article's abstract and six-category summary are accessible through ERIC, but the full article still needs to be checked before taxonomy freeze. Study populations, curricula, and task formats differ, so reported categories are not universal prevalence estimates. No numerical prevalence claims are made here.
