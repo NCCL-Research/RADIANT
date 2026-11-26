@@ -40,3 +40,8 @@ def test_metrics_reject_mismatched_lengths() -> None:
 def test_selective_accuracy_rejects_all_abstentions() -> None:
     with pytest.raises(ValueError):
         selective_accuracy(["a"], [None])
+
+
+def test_coverage_rejects_non_boolean_flags() -> None:
+    with pytest.raises(TypeError, match="booleans"):
+        coverage([False, 0, True])  # type: ignore[list-item]
