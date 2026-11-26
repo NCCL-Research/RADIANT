@@ -68,3 +68,32 @@ def test_loader_rejects_non_object_records(tmp_path) -> None:
     path.write_text('[]\n', encoding="utf-8")
     with pytest.raises(TypeError, match="JSON object"):
         load_attempts_jsonl(path)
+
+
+def test_reference_evidence_spans_round_trip_as_json_arrays(tmp_path) -> None:
+    case = StudentAttempt(
+        task_id="fractions-001",
+        attempt_id="a1",
+        prompt="A task prompt",
+        final_answer="1/2",
+        intermediate_work="divide the numerator and denominator by two",
+        reference_evidence_spans=("divide the numerator and denominator by two",),
+    )
+    path = tmp_path / "evidence.jsonl"
+    write_attempts_jsonl([case], path)
+    assert load_attempts_jsonl(path) == [case]
+
+
+def test_loader_rejects_non_array_reference_evidence_spans(tmp_path) -> None:
+    record = {
+        "task_id": "t1",
+        "attempt_id": "a1",
+        "prompt": "Prompt",
+        "final_answer": "answer",
+        "intermediate_work": "work",
+        "reference_evidence_spans": "work",
+    }
+    path = tmp_path / "bad-evidence.jsonl"
+    path.write_text(json.dumps(record) + "\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="reference_evidence_spans"):
+        load_attempts_jsonl(path)
