@@ -147,3 +147,35 @@ def test_insufficient_evidence_cannot_carry_a_reference_diagnosis() -> None:
 def test_legacy_single_label_is_exposed_as_one_reference_label() -> None:
     attempt = StudentAttempt("t1", "a1", "Prompt", "answer", "work", reference_label="legacy")
     assert attempt.reference_labels == ("legacy",)
+
+
+def test_diagnosis_supports_multiple_labels_and_optional_primary_label() -> None:
+    diagnosis = Diagnosis(
+        attempt_id="multi-output",
+        label=None,
+        confidence=0.7,
+        labels=("invalid_operation", "unsupported_conclusion"),
+        primary_label="invalid_operation",
+    )
+    assert diagnosis.normalized_labels == ("invalid_operation", "unsupported_conclusion")
+
+
+def test_diagnosis_rejects_primary_label_outside_label_set() -> None:
+    with pytest.raises(ValueError, match="primary_label must be one"):
+        Diagnosis(
+            attempt_id="bad-primary",
+            label=None,
+            confidence=0.7,
+            labels=("invalid_operation",),
+            primary_label="unrelated",
+        )
+
+
+def test_diagnosis_rejects_mixed_legacy_and_multilabel_fields() -> None:
+    with pytest.raises(ValueError, match="use label or labels"):
+        Diagnosis(
+            attempt_id="mixed-labels",
+            label="invalid_operation",
+            confidence=0.7,
+            labels=("unsupported_conclusion",),
+        )
