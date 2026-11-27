@@ -20,6 +20,7 @@ from radiant.schema import (
     ParaphrasePair,
     StudentAttempt,
 )
+from radiant.split_validation import validate_split_assignments
 
 __version__ = "0.1.0"
 
@@ -38,4 +39,5 @@ __all__ = [
     "paraphrase_pair_invariance",
     "per_class_metrics",
     "selective_accuracy",
+    "validate_split_assignments",
 ]
