@@ -1,0 +1,28 @@
+{
+  "manifest_version": "1.0",
+  "benchmark_id": "radiant-example-not-a-release",
+  "benchmark_version": "0.0.0-draft",
+  "status": "draft",
+  "created_at": null,
+  "task_domain": "not yet specified",
+  "case_source": {
+    "source_type": "researcher_authored_synthetic",
+    "description": "Template only; no benchmark cases are included.",
+    "authoring_method": "To be documented before case creation.",
+    "permissions_reference": null
+  },
+  "label_protocol": {
+    "protocol_id": null,
+    "version": null,
+    "status": "not_defined"
+  },
+  "splits": [],
+  "pairing_policy": null,
+  "license": null,
+  "privacy_review": {
+    "data_contains_personal_data": false,
+    "review_status": "not_applicable_synthetic_only",
+    "notes": "Template placeholder; update this field if the data source changes."
+  },
+  "notes": "Illustrative template, not a published benchmark manifest."
+}
