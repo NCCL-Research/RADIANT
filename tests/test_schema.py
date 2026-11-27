@@ -136,7 +136,7 @@ def test_insufficient_evidence_cannot_carry_a_reference_diagnosis() -> None:
             "attempt-insufficient",
             "Solve x + 1 = 2",
             "1",
-            "",
+            "placeholder",
             reference_diagnoses=(
                 ReferenceDiagnosis("sign_error", ("placeholder",)),
             ),
