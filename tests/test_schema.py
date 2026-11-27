@@ -77,3 +77,73 @@ def test_student_attempt_evidence_spans_must_be_exact_work_substrings() -> None:
             "task-1", "attempt-3", "Prompt", "answer", "work",
             reference_evidence_spans=("",),
         )
+
+
+from radiant.schema import ReferenceDiagnosis
+
+
+def test_reference_diagnoses_support_multiple_labels_with_label_specific_evidence() -> None:
+    attempt = StudentAttempt(
+        "fractions-001",
+        "attempt-multi",
+        "Simplify 2/4",
+        "1/2",
+        "I add 2 + 4 to get 6; then write 1/2.",
+        reference_diagnoses=(
+            ReferenceDiagnosis("invalid_operation", ("I add 2 + 4 to get 6",)),
+            ReferenceDiagnosis("unsupported_conclusion", ("then write 1/2",)),
+        ),
+        primary_label="invalid_operation",
+        evidence_status="sufficient",
+    )
+    assert attempt.reference_labels == ("invalid_operation", "unsupported_conclusion")
+    assert attempt.primary_label == "invalid_operation"
+
+
+def test_reference_diagnosis_requires_evidence_from_attempt_work() -> None:
+    with pytest.raises(ValueError, match="must occur in intermediate_work"):
+        StudentAttempt(
+            "fractions-001",
+            "attempt-bad-evidence",
+            "Simplify 2/4",
+            "1/2",
+            "I add 2 + 4.",
+            reference_diagnoses=(
+                ReferenceDiagnosis("invalid_operation", ("I multiply 2 by 4",)),
+            ),
+        )
+
+
+def test_primary_label_must_be_one_of_reference_labels() -> None:
+    with pytest.raises(ValueError, match="primary_label must be one"):
+        StudentAttempt(
+            "algebra-001",
+            "attempt-primary",
+            "Solve x + 1 = 2",
+            "x = 1",
+            "Subtract one from both sides.",
+            reference_diagnoses=(
+                ReferenceDiagnosis("valid_transformation", ("Subtract one from both sides",)),
+            ),
+            primary_label="unrelated_label",
+        )
+
+
+def test_insufficient_evidence_cannot_carry_a_reference_diagnosis() -> None:
+    with pytest.raises(ValueError, match="must not have reference diagnoses"):
+        StudentAttempt(
+            "algebra-001",
+            "attempt-insufficient",
+            "Solve x + 1 = 2",
+            "1",
+            "",
+            reference_diagnoses=(
+                ReferenceDiagnosis("sign_error", ("placeholder",)),
+            ),
+            evidence_status="insufficient",
+        )
+
+
+def test_legacy_single_label_is_exposed_as_one_reference_label() -> None:
+    attempt = StudentAttempt("t1", "a1", "Prompt", "answer", "work", reference_label="legacy")
+    assert attempt.reference_labels == ("legacy",)
