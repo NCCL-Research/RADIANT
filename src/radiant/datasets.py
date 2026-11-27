@@ -115,11 +115,11 @@ def write_attempts_jsonl(
     destination = Path(path)
     seen_ids: set[str] = set()
 
-    with destination.open("w", encoding="utf-8", newline="\\n") as stream:
+    with destination.open("w", encoding="utf-8", newline="\n") as stream:
         for attempt in attempts:
             if not isinstance(attempt, StudentAttempt):
                 raise TypeError("all records must be StudentAttempt instances")
             if attempt.attempt_id in seen_ids:
                 raise ValueError(f"duplicate attempt_id {attempt.attempt_id!r}")
             seen_ids.add(attempt.attempt_id)
-            stream.write(json.dumps(asdict(attempt), ensure_ascii=False) + "\\n")
+            stream.write(json.dumps(asdict(attempt), ensure_ascii=False) + "\n")
