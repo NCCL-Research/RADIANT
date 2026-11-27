@@ -144,3 +144,57 @@ def per_class_metrics(
             "support": support,
         }
     return results
+
+
+def multilabel_exact_match(
+    y_true: Sequence[Sequence[str]], y_pred: Sequence[Sequence[str]]
+) -> float:
+    """Fraction of attempts whose complete predicted label set matches the reference set.
+
+    Empty sets are valid and mean that no in-scope error label was assigned;
+    abstention must be represented separately rather than as an empty set.
+    """
+    _validate_equal_nonempty(y_true, y_pred)
+    true_sets = [_validated_label_set(labels) for labels in y_true]
+    pred_sets = [_validated_label_set(labels) for labels in y_pred]
+    return sum(a == b for a, b in zip(true_sets, pred_sets, strict=True)) / len(true_sets)
+
+
+def multilabel_per_class_metrics(
+    y_true: Sequence[Sequence[str]],
+    y_pred: Sequence[Sequence[str]],
+    labels: Sequence[str] | None = None,
+) -> dict[str, dict[str, float | int]]:
+    """Return one-vs-rest precision, recall, F1, and support for each label."""
+    _validate_equal_nonempty(y_true, y_pred)
+    true_sets = [_validated_label_set(values) for values in y_true]
+    pred_sets = [_validated_label_set(values) for values in y_pred]
+    observed = set().union(*true_sets, *pred_sets)
+    selected = list(labels) if labels is not None else sorted(observed)
+    if not selected or len(selected) != len(set(selected)):
+        raise ValueError("labels must be non-empty and unique")
+    if any(not isinstance(value, str) or not value.strip() for value in selected):
+        raise ValueError("labels must contain non-empty strings")
+    if not observed.issubset(set(selected)):
+        raise ValueError("observed labels must be included in labels")
+    results: dict[str, dict[str, float | int]] = {}
+    for label in selected:
+        tp = sum(label in truth and label in pred for truth, pred in zip(true_sets, pred_sets, strict=True))
+        fp = sum(label not in truth and label in pred for truth, pred in zip(true_sets, pred_sets, strict=True))
+        fn = sum(label in truth and label not in pred for truth, pred in zip(true_sets, pred_sets, strict=True))
+        precision = tp / (tp + fp) if tp + fp else 0.0
+        recall = tp / (tp + fn) if tp + fn else 0.0
+        f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
+        results[label] = {"precision": precision, "recall": recall, "f1": f1, "support": tp + fn}
+    return results
+
+
+def _validated_label_set(values: Sequence[str]) -> frozenset[str]:
+    if isinstance(values, (str, bytes)):
+        raise TypeError("each multi-label observation must be a sequence of labels, not a string")
+    labels = list(values)
+    if any(not isinstance(value, str) or not value.strip() for value in labels):
+        raise ValueError("multi-label observations must contain non-empty strings")
+    if len(labels) != len(set(labels)):
+        raise ValueError("multi-label observations must not contain duplicate labels")
+    return frozenset(labels)

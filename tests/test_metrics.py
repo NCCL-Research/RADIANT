@@ -79,3 +79,43 @@ def test_per_class_metrics_rejects_empty_or_mismatched_data() -> None:
         per_class_metrics([], [])
     with pytest.raises(ValueError):
         per_class_metrics(["a"], ["a", "b"])
+
+
+
+def test_multilabel_exact_match_compares_complete_label_sets() -> None:
+    from radiant.metrics import multilabel_exact_match
+
+    assert multilabel_exact_match(
+        [("a", "b"), (), ("c",)],
+        [("b", "a"), (), ("a",)],
+    ) == pytest.approx(2 / 3)
+
+
+def test_multilabel_per_class_metrics_uses_one_vs_rest_counts() -> None:
+    from radiant.metrics import multilabel_per_class_metrics
+
+    result = multilabel_per_class_metrics(
+        [("a", "b"), ("a", "b"), ()],
+        [("a", "b"), ("a",), ("b",)],
+    )
+    assert result["a"] == {
+        "precision": pytest.approx(1.0),
+        "recall": pytest.approx(1.0),
+        "f1": pytest.approx(1.0),
+        "support": 2,
+    }
+    assert result["b"] == {
+        "precision": pytest.approx(0.5),
+        "recall": pytest.approx(0.5),
+        "f1": pytest.approx(0.5),
+        "support": 2,
+    }
+
+
+def test_multilabel_metrics_reject_strings_and_duplicate_labels() -> None:
+    from radiant.metrics import multilabel_exact_match
+
+    with pytest.raises(TypeError, match="not a string"):
+        multilabel_exact_match([("a",)], ["a"])  # type: ignore[list-item]
+    with pytest.raises(ValueError, match="duplicate"):
+        multilabel_exact_match([("a", "a")], [("a",)])

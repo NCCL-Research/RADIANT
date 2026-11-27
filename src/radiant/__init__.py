@@ -10,6 +10,8 @@ from radiant.metrics import (
     counterfactual_response_rate,
     coverage,
     macro_f1,
+    multilabel_exact_match,
+    multilabel_per_class_metrics,
     paraphrase_invariance,
     per_class_metrics,
     selective_accuracy,
@@ -17,6 +19,7 @@ from radiant.metrics import (
 from radiant.schema import (
     CounterfactualPair,
     Diagnosis,
+    LabelEvidence,
     ParaphrasePair,
     ReferenceDiagnosis,
     StudentAttempt,
@@ -28,6 +31,7 @@ __version__ = "0.1.0"
 __all__ = [
     "CounterfactualPair",
     "Diagnosis",
+    "LabelEvidence",
     "ParaphrasePair",
     "ReferenceDiagnosis",
     "StudentAttempt",
@@ -37,6 +41,8 @@ __all__ = [
     "counterfactual_response_rate",
     "coverage",
     "macro_f1",
+    "multilabel_exact_match",
+    "multilabel_per_class_metrics",
     "paraphrase_invariance",
     "paraphrase_pair_invariance",
     "per_class_metrics",
