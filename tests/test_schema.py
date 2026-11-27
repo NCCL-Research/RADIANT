@@ -184,3 +184,49 @@ def test_diagnosis_rejects_mixed_legacy_and_multilabel_fields() -> None:
             confidence=0.7,
             labels=("unsupported_conclusion",),
         )
+
+
+
+def test_prediction_label_evidence_is_linked_one_to_one_with_labels() -> None:
+    from radiant.schema import LabelEvidence
+
+    diagnosis = Diagnosis(
+        "predicted-evidence",
+        None,
+        0.8,
+        labels=("sign_error", "invalid_operation"),
+        label_evidence=(
+            LabelEvidence("sign_error", ("changed the sign",)),
+            LabelEvidence("invalid_operation", ("added the denominators",)),
+        ),
+    )
+    assert {item.label for item in diagnosis.label_evidence} == set(diagnosis.normalized_labels)
+
+
+def test_prediction_label_evidence_rejects_missing_or_extra_label_links() -> None:
+    from radiant.schema import LabelEvidence
+
+    with pytest.raises(ValueError, match="exactly one record"):
+        Diagnosis(
+            "missing-link",
+            None,
+            0.8,
+            labels=("sign_error", "invalid_operation"),
+            label_evidence=(LabelEvidence("sign_error", ("changed sign",)),),
+        )
+
+
+def test_prediction_label_evidence_rejects_duplicate_label_links() -> None:
+    from radiant.schema import LabelEvidence
+
+    with pytest.raises(ValueError, match="must be unique"):
+        Diagnosis(
+            "duplicate-link",
+            None,
+            0.8,
+            labels=("sign_error",),
+            label_evidence=(
+                LabelEvidence("sign_error", ("changed sign",)),
+                LabelEvidence("sign_error", ("another span",)),
+            ),
+        )
