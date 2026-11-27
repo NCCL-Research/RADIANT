@@ -26,7 +26,9 @@ infer intermediate reasoning from the final answer.
 
 Use the same split_group_id for an original case and every paraphrase or counterfactual derived from it. Run validate_split_assignments() before evaluation to reject groups spanning multiple splits. Model outputs should be stored separately from reference annotations. A
 Diagnosis record contains the predicted label, optional confidence,
-evidence spans, explanation, abstention state, and optional run metadata.
+evidence spans, explanation, abstention state, and optional run metadata. A
+missing diagnosis label must be represented as an explicit abstention; a
+non-abstaining diagnosis must carry a label.
 
 ## Data protection
 

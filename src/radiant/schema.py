@@ -82,6 +82,8 @@ class Diagnosis:
             raise TypeError("abstained must be a boolean")
         if self.abstained and self.label is not None:
             raise ValueError("an abstained diagnosis must not include a label")
+        if self.label is None and not self.abstained:
+            raise ValueError("a diagnosis without a label must be marked as abstained")
         if self.metadata is not None and not isinstance(self.metadata, dict):
             raise ValueError("metadata must be a dictionary or None")
 
