@@ -129,11 +129,26 @@ class Diagnosis:
     explanation: str = ""
     abstained: bool = False
     metadata: dict[str, Any] | None = None
+    labels: tuple[str, ...] = ()
+    primary_label: str | None = None
 
     def __post_init__(self) -> None:
         _require_nonblank(self.attempt_id, "attempt_id")
         if self.label is not None:
             _require_nonblank(self.label, "label")
+        if not isinstance(self.labels, tuple) or any(
+            not isinstance(value, str) or not value.strip() for value in self.labels
+        ):
+            raise ValueError("labels must be a tuple of non-empty strings")
+        if len(self.labels) != len(set(self.labels)):
+            raise ValueError("diagnosis labels must be unique")
+        if self.label is not None and self.labels:
+            raise ValueError("use label or labels, not both")
+        normalized = self.labels or ((self.label,) if self.label is not None else ())
+        if self.primary_label is not None:
+            _require_nonblank(self.primary_label, "primary_label")
+            if self.primary_label not in normalized:
+                raise ValueError("primary_label must be one of the diagnosis labels")
         if self.confidence is not None and (
             isinstance(self.confidence, bool)
             or not isinstance(self.confidence, (int, float))
@@ -150,10 +165,10 @@ class Diagnosis:
             raise TypeError("explanation must be a string")
         if not isinstance(self.abstained, bool):
             raise TypeError("abstained must be a boolean")
-        if self.abstained and self.label is not None:
-            raise ValueError("an abstained diagnosis must not include a label")
-        if self.label is None and not self.abstained:
-            raise ValueError("a diagnosis without a label must be marked as abstained")
+        if self.abstained and normalized:
+            raise ValueError("an abstained diagnosis must not include labels")
+        if not normalized and not self.abstained:
+            raise ValueError("a diagnosis without labels must be marked as abstained")
         if self.metadata is not None and not isinstance(self.metadata, dict):
             raise ValueError("metadata must be a dictionary or None")
 
@@ -165,6 +180,13 @@ class ParaphrasePair:
     pair_id: str
     original: Diagnosis
     paraphrased: Diagnosis
+
+    @property
+    def normalized_labels(self) -> tuple[str, ...]:
+        """Return labels as a tuple, including legacy single-label outputs."""
+        if self.labels:
+            return self.labels
+        return (self.label,) if self.label is not None else ()
 
     def __post_init__(self) -> None:
         _require_nonblank(self.pair_id, "pair_id")
