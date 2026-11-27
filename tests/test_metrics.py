@@ -108,7 +108,7 @@ def test_multilabel_per_class_metrics_uses_one_vs_rest_counts() -> None:
         "precision": pytest.approx(0.5),
         "recall": pytest.approx(0.5),
         "f1": pytest.approx(0.5),
-        "support": 1,
+        "support": 2,
     }
 
 
