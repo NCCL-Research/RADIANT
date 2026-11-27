@@ -20,11 +20,11 @@ def paraphrase_pair_invariance(pairs: Sequence[ParaphrasePair]) -> float:
     _validate_unique_pair_ids(pairs)
     return paraphrase_invariance(
         [
-            pair.original.normalized_labels if not pair.original.abstained else None
+            tuple(sorted(pair.original.normalized_labels)) if not pair.original.abstained else None
             for pair in pairs
         ],
         [
-            pair.paraphrased.normalized_labels if not pair.paraphrased.abstained else None
+            tuple(sorted(pair.paraphrased.normalized_labels)) if not pair.paraphrased.abstained else None
             for pair in pairs
         ],
     )
@@ -36,8 +36,8 @@ def counterfactual_pair_response_rate(pairs: Sequence[CounterfactualPair]) -> fl
         raise ValueError("pairs must not be empty")
     _validate_unique_pair_ids(pairs)
     observed = [
-        (pair.baseline.normalized_labels, pair.baseline.abstained)
-        != (pair.counterfactual.normalized_labels, pair.counterfactual.abstained)
+        (tuple(sorted(pair.baseline.normalized_labels)), pair.baseline.abstained)
+        != (tuple(sorted(pair.counterfactual.normalized_labels)), pair.counterfactual.abstained)
         for pair in pairs
     ]
     expected = [pair.expected_change for pair in pairs]
