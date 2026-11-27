@@ -11,6 +11,7 @@ from radiant.metrics import (
     coverage,
     macro_f1,
     paraphrase_invariance,
+    per_class_metrics,
     selective_accuracy,
 )
 from radiant.schema import (
@@ -35,5 +36,6 @@ __all__ = [
     "macro_f1",
     "paraphrase_invariance",
     "paraphrase_pair_invariance",
+    "per_class_metrics",
     "selective_accuracy",
 ]
