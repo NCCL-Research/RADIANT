@@ -10,7 +10,6 @@ from dataclasses import dataclass
 from math import isfinite
 from typing import Any
 
-
 EVIDENCE_STATUSES = frozenset(
     {"unassessed", "sufficient", "ambiguous", "insufficient", "out_of_scope"}
 )
