@@ -90,3 +90,62 @@ def test_counterfactual_pair_detects_multilabel_set_change() -> None:
     )
     pair = CounterfactualPair("multi-cf", baseline, changed, expected_change=True)
     assert counterfactual_pair_response_rate([pair]) == 1.0
+
+
+def test_predicted_evidence_spans_must_occur_in_the_attempt_work() -> None:
+    from radiant.evaluation import validate_diagnosis_evidence
+    from radiant.schema import LabelEvidence, StudentAttempt
+
+    attempt = StudentAttempt(
+        "task-1", "attempt-1", "Simplify 2/4", "1/2",
+        "I add the numerator and denominator: 2 + 4 = 6.",
+    )
+    diagnosis = Diagnosis(
+        "attempt-1", None, 0.8,
+        labels=("invalid_operation",),
+        label_evidence=(
+            LabelEvidence("invalid_operation", ("2 + 4 = 6",)),
+        ),
+    )
+    validate_diagnosis_evidence(attempt, diagnosis)
+
+
+def test_predicted_evidence_rejects_spans_not_in_attempt_work() -> None:
+    from radiant.evaluation import validate_diagnosis_evidence
+    from radiant.schema import LabelEvidence, StudentAttempt
+
+    attempt = StudentAttempt(
+        "task-1", "attempt-1", "Simplify 2/4", "1/2",
+        "I add the numerator and denominator.",
+    )
+    diagnosis = Diagnosis(
+        "attempt-1", None, 0.8,
+        labels=("invalid_operation",),
+        label_evidence=(
+            LabelEvidence("invalid_operation", ("I multiplied 2 by 4",)),
+        ),
+    )
+    with pytest.raises(ValueError, match="must occur in intermediate_work"):
+        validate_diagnosis_evidence(attempt, diagnosis)
+
+
+def test_predicted_evidence_rejects_mismatched_attempt_ids() -> None:
+    from radiant.evaluation import validate_diagnosis_evidence
+    from radiant.schema import StudentAttempt
+
+    attempt = StudentAttempt("task-1", "attempt-1", "Prompt", "answer", "work")
+    diagnosis = Diagnosis("different-attempt", None, None, abstained=True)
+    with pytest.raises(ValueError, match="must match"):
+        validate_diagnosis_evidence(attempt, diagnosis)
+
+
+def test_predicted_legacy_evidence_spans_are_also_validated() -> None:
+    from radiant.evaluation import validate_diagnosis_evidence
+    from radiant.schema import StudentAttempt
+
+    attempt = StudentAttempt("task-1", "attempt-1", "Prompt", "answer", "submitted work")
+    diagnosis = Diagnosis(
+        "attempt-1", "some_label", 0.7, evidence_spans=("invented span",)
+    )
+    with pytest.raises(ValueError, match="must occur in intermediate_work"):
+        validate_diagnosis_evidence(attempt, diagnosis)
