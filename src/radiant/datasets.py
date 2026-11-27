@@ -10,7 +10,7 @@ from collections.abc import Iterable
 from dataclasses import asdict
 from pathlib import Path
 
-from radiant.schema import StudentAttempt
+from radiant.schema import ReferenceDiagnosis, StudentAttempt
 
 _ALLOWED_FIELDS = {
     "task_id",
@@ -21,6 +21,9 @@ _ALLOWED_FIELDS = {
     "reference_label",
     "split_group_id",
     "reference_evidence_spans",
+    "reference_diagnoses",
+    "primary_label",
+    "evidence_status",
 }
 
 
@@ -49,7 +52,15 @@ def load_attempts_jsonl(path: str | Path) -> list[StudentAttempt]:
                 names = ", ".join(sorted(unknown))
                 raise ValueError(f"{source}:{line_number}: unknown field(s): {names}")
 
-            missing = _ALLOWED_FIELDS - {"reference_label", "split_group_id", "reference_evidence_spans"} - set(record)
+            optional_fields = {
+                "reference_label",
+                "split_group_id",
+                "reference_evidence_spans",
+                "reference_diagnoses",
+                "primary_label",
+                "evidence_status",
+            }
+            missing = _ALLOWED_FIELDS - optional_fields - set(record)
             if missing:
                 names = ", ".join(sorted(missing))
                 raise ValueError(f"{source}:{line_number}: missing required field(s): {names}")
@@ -59,6 +70,27 @@ def load_attempts_jsonl(path: str | Path) -> list[StudentAttempt]:
                 if not isinstance(spans, list):
                     raise TypeError("reference_evidence_spans must be a JSON array")
                 record["reference_evidence_spans"] = tuple(spans)
+
+            if "reference_diagnoses" in record:
+                diagnoses = record["reference_diagnoses"]
+                if not isinstance(diagnoses, list):
+                    raise TypeError("reference_diagnoses must be a JSON array")
+                normalized = []
+                for item in diagnoses:
+                    if not isinstance(item, dict):
+                        raise TypeError("each reference diagnosis must be a JSON object")
+                    if set(item) != {"label", "evidence_spans"}:
+                        raise ValueError(
+                            "each reference diagnosis must contain exactly "
+                            "label and evidence_spans"
+                        )
+                    spans = item["evidence_spans"]
+                    if not isinstance(spans, list):
+                        raise TypeError("diagnosis evidence_spans must be a JSON array")
+                    normalized.append(
+                        ReferenceDiagnosis(label=item["label"], evidence_spans=tuple(spans))
+                    )
+                record["reference_diagnoses"] = tuple(normalized)
 
             try:
                 attempt = StudentAttempt(**record)

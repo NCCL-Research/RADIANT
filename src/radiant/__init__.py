@@ -18,6 +18,7 @@ from radiant.schema import (
     CounterfactualPair,
     Diagnosis,
     ParaphrasePair,
+    ReferenceDiagnosis,
     StudentAttempt,
 )
 from radiant.split_validation import validate_split_assignments
@@ -28,6 +29,7 @@ __all__ = [
     "CounterfactualPair",
     "Diagnosis",
     "ParaphrasePair",
+    "ReferenceDiagnosis",
     "StudentAttempt",
     "accuracy",
     "confusion_matrix",

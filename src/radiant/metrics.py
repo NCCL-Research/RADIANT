@@ -48,7 +48,7 @@ def selective_accuracy(y_true: Sequence[str], y_pred: Sequence[str | None]) -> f
 
 
 def paraphrase_invariance(
-    labels_a: Sequence[str | None], labels_b: Sequence[str | None]
+    labels_a: Sequence[str | tuple[str, ...] | None], labels_b: Sequence[str | tuple[str, ...] | None]
 ) -> float:
     """Fraction of paired paraphrases receiving the same non-abstention label.
 

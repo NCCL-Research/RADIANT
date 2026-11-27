@@ -3,7 +3,7 @@ import json
 import pytest
 
 from radiant.datasets import load_attempts_jsonl, write_attempts_jsonl
-from radiant.schema import StudentAttempt
+from radiant.schema import ReferenceDiagnosis, StudentAttempt
 
 
 def attempt(attempt_id: str = "a1") -> StudentAttempt:
@@ -96,4 +96,42 @@ def test_loader_rejects_non_array_reference_evidence_spans(tmp_path) -> None:
     path = tmp_path / "bad-evidence.jsonl"
     path.write_text(json.dumps(record) + "\n", encoding="utf-8")
     with pytest.raises(TypeError, match="reference_evidence_spans"):
+        load_attempts_jsonl(path)
+
+
+
+
+def test_multilabel_reference_annotations_round_trip(tmp_path) -> None:
+    case = StudentAttempt(
+        task_id="fractions-002",
+        attempt_id="multi-1",
+        prompt="Simplify 2/4",
+        final_answer="1/2",
+        intermediate_work="I add 2 + 4; then I write 1/2.",
+        reference_diagnoses=(
+            ReferenceDiagnosis("invalid_operation", ("I add 2 + 4",)),
+            ReferenceDiagnosis("unsupported_conclusion", ("then I write 1/2",)),
+        ),
+        primary_label="invalid_operation",
+        evidence_status="sufficient",
+    )
+    path = tmp_path / "multilabel.jsonl"
+    write_attempts_jsonl([case], path)
+    assert load_attempts_jsonl(path) == [case]
+
+
+def test_loader_rejects_malformed_reference_diagnosis(tmp_path) -> None:
+    record = {
+        "task_id": "t1",
+        "attempt_id": "a1",
+        "prompt": "Prompt",
+        "final_answer": "answer",
+        "intermediate_work": "work",
+        "reference_diagnoses": [
+            {"label": "unsupported", "evidence_spans": "work"}
+        ],
+    }
+    path = tmp_path / "bad-reference-diagnosis.jsonl"
+    path.write_text(json.dumps(record) + "\n", encoding="utf-8")
+    with pytest.raises(TypeError, match="diagnosis evidence_spans"):
         load_attempts_jsonl(path)
