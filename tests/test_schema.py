@@ -2,7 +2,13 @@ import math
 
 import pytest
 
-from radiant.schema import CounterfactualPair, Diagnosis, ParaphrasePair, StudentAttempt
+from radiant.schema import (
+    CounterfactualPair,
+    Diagnosis,
+    ParaphrasePair,
+    ReferenceDiagnosis,
+    StudentAttempt,
+)
 
 
 def test_student_attempt_requires_identifiers_and_prompt() -> None:
@@ -79,7 +85,6 @@ def test_student_attempt_evidence_spans_must_be_exact_work_substrings() -> None:
         )
 
 
-from radiant.schema import ReferenceDiagnosis
 
 
 def test_reference_diagnoses_support_multiple_labels_with_label_specific_evidence() -> None:
