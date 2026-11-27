@@ -54,3 +54,20 @@ def test_pair_metrics_reject_empty_input() -> None:
         paraphrase_pair_invariance([])
     with pytest.raises(ValueError):
         counterfactual_pair_response_rate([])
+
+
+def test_pair_metrics_reject_duplicate_pair_ids() -> None:
+    first = diagnosis("a", "sign_error")
+    second = diagnosis("b", "sign_error")
+    duplicate_paraphrases = [
+        ParaphrasePair("same-pair", first, second),
+        ParaphrasePair("same-pair", diagnosis("c", "x"), diagnosis("d", "x")),
+    ]
+    duplicate_counterfactuals = [
+        CounterfactualPair("same-pair", first, second, False),
+        CounterfactualPair("same-pair", diagnosis("c", "x"), diagnosis("d", "y"), True),
+    ]
+    with pytest.raises(ValueError, match="pair IDs must be unique"):
+        paraphrase_pair_invariance(duplicate_paraphrases)
+    with pytest.raises(ValueError, match="pair IDs must be unique"):
+        counterfactual_pair_response_rate(duplicate_counterfactuals)
