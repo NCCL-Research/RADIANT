@@ -17,6 +17,8 @@ No real learner data, recruitment, or interaction is part of this initial synthe
 
 ## 3. Stage 0 — system capability audit
 
+The source-level Noggimigo review is recorded in [NOGGIMIGO_CAPABILITY_AUDIT.md](NOGGIMIGO_CAPABILITY_AUDIT.md); it is pinned to a specific Noggimigo commit and must be repeated if that implementation changes.
+
 Before including a system in diagnostic-accuracy comparisons, document whether it can:
 
 - receive the task prompt and intermediate work as separate inputs;

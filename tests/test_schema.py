@@ -61,3 +61,19 @@ def test_abstained_diagnosis_may_omit_label() -> None:
     diagnosis = Diagnosis("attempt-1", None, None, abstained=True)
     assert diagnosis.abstained is True
     assert diagnosis.label is None
+def test_student_attempt_evidence_spans_must_be_exact_work_substrings() -> None:
+    attempt = StudentAttempt(
+        "task-1", "attempt-1", "Prompt", "answer", "first step; second step",
+        reference_evidence_spans=("first step", "second step"),
+    )
+    assert attempt.reference_evidence_spans == ("first step", "second step")
+    with pytest.raises(ValueError, match="must occur in intermediate_work"):
+        StudentAttempt(
+            "task-1", "attempt-2", "Prompt", "answer", "first step",
+            reference_evidence_spans=("invented evidence",),
+        )
+    with pytest.raises(ValueError, match="non-empty strings"):
+        StudentAttempt(
+            "task-1", "attempt-3", "Prompt", "answer", "work",
+            reference_evidence_spans=("",),
+        )

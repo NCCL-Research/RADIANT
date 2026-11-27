@@ -26,6 +26,8 @@ class StudentAttempt:
     final_answer: str
     intermediate_work: str
     reference_label: str | None = None
+    split_group_id: str | None = None
+    reference_evidence_spans: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         for field_name in ("task_id", "attempt_id", "prompt"):
@@ -35,6 +37,15 @@ class StudentAttempt:
                 raise TypeError(f"{field_name} must be a string")
         if self.reference_label is not None:
             _require_nonblank(self.reference_label, "reference_label")
+        if self.split_group_id is not None:
+            _require_nonblank(self.split_group_id, "split_group_id")
+        if not isinstance(self.reference_evidence_spans, tuple) or any(
+            not isinstance(span, str) or not span.strip()
+            for span in self.reference_evidence_spans
+        ):
+            raise ValueError("reference_evidence_spans must be a tuple of non-empty strings")
+        if any(span not in self.intermediate_work for span in self.reference_evidence_spans):
+            raise ValueError("each reference evidence span must occur in intermediate_work")
 
 
 @dataclass(frozen=True, slots=True)

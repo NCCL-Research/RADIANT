@@ -6,6 +6,7 @@ from radiant.metrics import (
     coverage,
     macro_f1,
     paraphrase_invariance,
+    per_class_metrics,
     selective_accuracy,
 )
 
@@ -45,3 +46,36 @@ def test_selective_accuracy_rejects_all_abstentions() -> None:
 def test_coverage_rejects_non_boolean_flags() -> None:
     with pytest.raises(TypeError, match="booleans"):
         coverage([False, 0, True])  # type: ignore[list-item]
+
+
+def test_per_class_metrics_reports_precision_recall_f1_and_support() -> None:
+    result = per_class_metrics(["a", "a", "b"], ["a", "b", "b"])
+    assert result["a"] == {
+        "precision": pytest.approx(1.0),
+        "recall": pytest.approx(0.5),
+        "f1": pytest.approx(2 / 3),
+        "support": 2,
+    }
+    assert result["b"] == {
+        "precision": pytest.approx(0.5),
+        "recall": pytest.approx(1.0),
+        "f1": pytest.approx(2 / 3),
+        "support": 1,
+    }
+
+
+def test_per_class_metrics_preserves_explicit_labels_with_zero_support() -> None:
+    result = per_class_metrics(["a"], ["a"], labels=["a", "b"])
+    assert result["b"] == {
+        "precision": pytest.approx(0.0),
+        "recall": pytest.approx(0.0),
+        "f1": pytest.approx(0.0),
+        "support": 0,
+    }
+
+
+def test_per_class_metrics_rejects_empty_or_mismatched_data() -> None:
+    with pytest.raises(ValueError):
+        per_class_metrics([], [])
+    with pytest.raises(ValueError):
+        per_class_metrics(["a"], ["a", "b"])
