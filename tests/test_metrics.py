@@ -95,8 +95,8 @@ def test_multilabel_per_class_metrics_uses_one_vs_rest_counts() -> None:
     from radiant.metrics import multilabel_per_class_metrics
 
     result = multilabel_per_class_metrics(
-        [("a", "b"), ("a",), ()],
-        [("a",), ("a", "b"), ("b",)],
+        [("a", "b"), ("a", "b"), ()],
+        [("a", "b"), ("a",), ("b",)],
     )
     assert result["a"] == {
         "precision": pytest.approx(1.0),
