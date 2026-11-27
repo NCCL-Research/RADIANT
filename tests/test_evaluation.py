@@ -71,3 +71,22 @@ def test_pair_metrics_reject_duplicate_pair_ids() -> None:
         paraphrase_pair_invariance(duplicate_paraphrases)
     with pytest.raises(ValueError, match="pair IDs must be unique"):
         counterfactual_pair_response_rate(duplicate_counterfactuals)
+
+
+def test_paraphrase_invariance_compares_complete_unordered_label_sets() -> None:
+    first = Diagnosis(
+        "multi-a", None, 0.8, labels=("invalid_operation", "unsupported_conclusion")
+    )
+    second = Diagnosis(
+        "multi-b", None, 0.8, labels=("unsupported_conclusion", "invalid_operation")
+    )
+    assert paraphrase_pair_invariance([ParaphrasePair("multi-pair", first, second)]) == 1.0
+
+
+def test_counterfactual_pair_detects_multilabel_set_change() -> None:
+    baseline = Diagnosis("multi-base", None, 0.8, labels=("invalid_operation",))
+    changed = Diagnosis(
+        "multi-changed", None, 0.8, labels=("invalid_operation", "unsupported_conclusion")
+    )
+    pair = CounterfactualPair("multi-cf", baseline, changed, expected_change=True)
+    assert counterfactual_pair_response_rate([pair]) == 1.0
