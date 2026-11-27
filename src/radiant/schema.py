@@ -11,14 +11,39 @@ from math import isfinite
 from typing import Any
 
 
+EVIDENCE_STATUSES = frozenset(
+    {"unassessed", "sufficient", "ambiguous", "insufficient", "out_of_scope"}
+)
+
+
 def _require_nonblank(value: str, field_name: str) -> None:
     if not isinstance(value, str) or not value.strip():
         raise ValueError(f"{field_name} must be a non-empty string")
 
 
 @dataclass(frozen=True, slots=True)
+class ReferenceDiagnosis:
+    """One reference error-family label and the work that supports it."""
+
+    label: str
+    evidence_spans: tuple[str, ...]
+
+    def __post_init__(self) -> None:
+        _require_nonblank(self.label, "label")
+        if not isinstance(self.evidence_spans, tuple) or not self.evidence_spans:
+            raise ValueError("each reference diagnosis requires evidence_spans")
+        if any(not isinstance(span, str) or not span.strip() for span in self.evidence_spans):
+            raise ValueError("reference evidence spans must be non-empty strings")
+
+
+@dataclass(frozen=True, slots=True)
 class StudentAttempt:
-    """One student's worked attempt at a mathematical task."""
+    """One student's worked attempt at a mathematical task.
+
+    reference_label and reference_evidence_spans remain available for
+    legacy single-label records. New benchmark records should use
+    reference_diagnoses, where each label carries its own evidence spans.
+    """
 
     task_id: str
     attempt_id: str
@@ -28,6 +53,9 @@ class StudentAttempt:
     reference_label: str | None = None
     split_group_id: str | None = None
     reference_evidence_spans: tuple[str, ...] = ()
+    reference_diagnoses: tuple[ReferenceDiagnosis, ...] = ()
+    primary_label: str | None = None
+    evidence_status: str = "unassessed"
 
     def __post_init__(self) -> None:
         for field_name in ("task_id", "attempt_id", "prompt"):
@@ -46,6 +74,48 @@ class StudentAttempt:
             raise ValueError("reference_evidence_spans must be a tuple of non-empty strings")
         if any(span not in self.intermediate_work for span in self.reference_evidence_spans):
             raise ValueError("each reference evidence span must occur in intermediate_work")
+
+        if not isinstance(self.reference_diagnoses, tuple) or any(
+            not isinstance(item, ReferenceDiagnosis) for item in self.reference_diagnoses
+        ):
+            raise TypeError("reference_diagnoses must be a tuple of ReferenceDiagnosis records")
+        labels = [item.label for item in self.reference_diagnoses]
+        if len(labels) != len(set(labels)):
+            raise ValueError("reference diagnosis labels must be unique")
+        if self.reference_label is not None and self.reference_diagnoses:
+            raise ValueError("use reference_label or reference_diagnoses, not both")
+        for diagnosis in self.reference_diagnoses:
+            if any(span not in self.intermediate_work for span in diagnosis.evidence_spans):
+                raise ValueError(
+                    f"evidence for reference label {diagnosis.label!r} "
+                    "must occur in intermediate_work"
+                )
+        if self.primary_label is not None:
+            _require_nonblank(self.primary_label, "primary_label")
+            available = set(labels)
+            if self.reference_label is not None:
+                available.add(self.reference_label)
+            if self.primary_label not in available:
+                raise ValueError("primary_label must be one of the reference labels")
+        if self.evidence_status not in EVIDENCE_STATUSES:
+            raise ValueError(
+                "evidence_status must be one of: " + ", ".join(sorted(EVIDENCE_STATUSES))
+            )
+        if self.evidence_status in {"insufficient", "out_of_scope"} and (
+            self.reference_label is not None or self.reference_diagnoses
+        ):
+            raise ValueError(
+                "insufficient or out_of_scope attempts must not have reference diagnoses"
+            )
+
+    @property
+    def reference_labels(self) -> tuple[str, ...]:
+        """Return normalized reference labels for legacy and multi-label records."""
+        if self.reference_diagnoses:
+            return tuple(item.label for item in self.reference_diagnoses)
+        if self.reference_label is not None:
+            return (self.reference_label,)
+        return ()
 
 
 @dataclass(frozen=True, slots=True)
