@@ -172,6 +172,13 @@ class Diagnosis:
         if self.metadata is not None and not isinstance(self.metadata, dict):
             raise ValueError("metadata must be a dictionary or None")
 
+    @property
+    def normalized_labels(self) -> tuple[str, ...]:
+        """Return labels as a tuple, including legacy single-label outputs."""
+        if self.labels:
+            return self.labels
+        return (self.label,) if self.label is not None else ()
+
 
 @dataclass(frozen=True, slots=True)
 class ParaphrasePair:
@@ -180,13 +187,6 @@ class ParaphrasePair:
     pair_id: str
     original: Diagnosis
     paraphrased: Diagnosis
-
-    @property
-    def normalized_labels(self) -> tuple[str, ...]:
-        """Return labels as a tuple, including legacy single-label outputs."""
-        if self.labels:
-            return self.labels
-        return (self.label,) if self.label is not None else ()
 
     def __post_init__(self) -> None:
         _require_nonblank(self.pair_id, "pair_id")
