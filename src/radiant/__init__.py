@@ -3,6 +3,7 @@
 from radiant.evaluation import (
     counterfactual_pair_response_rate,
     paraphrase_pair_invariance,
+    validate_diagnosis_evidence,
 )
 from radiant.metrics import (
     accuracy,
@@ -47,5 +48,6 @@ __all__ = [
     "paraphrase_pair_invariance",
     "per_class_metrics",
     "selective_accuracy",
+    "validate_diagnosis_evidence",
     "validate_split_assignments",
 ]
