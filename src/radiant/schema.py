@@ -36,6 +36,21 @@ class ReferenceDiagnosis:
 
 
 @dataclass(frozen=True, slots=True)
+class LabelEvidence:
+    """One predicted label and the attempt text offered in support of it."""
+
+    label: str
+    evidence_spans: tuple[str, ...]
+
+    def __post_init__(self) -> None:
+        _require_nonblank(self.label, "label")
+        if not isinstance(self.evidence_spans, tuple) or not self.evidence_spans:
+            raise ValueError("each label evidence record requires evidence_spans")
+        if any(not isinstance(span, str) or not span.strip() for span in self.evidence_spans):
+            raise ValueError("label evidence spans must be non-empty strings")
+
+
+@dataclass(frozen=True, slots=True)
 class StudentAttempt:
     """One student's worked attempt at a mathematical task.
 
@@ -130,6 +145,7 @@ class Diagnosis:
     metadata: dict[str, Any] | None = None
     labels: tuple[str, ...] = ()
     primary_label: str | None = None
+    label_evidence: tuple[LabelEvidence, ...] = ()
 
     def __post_init__(self) -> None:
         _require_nonblank(self.attempt_id, "attempt_id")
@@ -148,6 +164,15 @@ class Diagnosis:
             _require_nonblank(self.primary_label, "primary_label")
             if self.primary_label not in normalized:
                 raise ValueError("primary_label must be one of the diagnosis labels")
+        if not isinstance(self.label_evidence, tuple) or any(
+            not isinstance(item, LabelEvidence) for item in self.label_evidence
+        ):
+            raise TypeError("label_evidence must be a tuple of LabelEvidence records")
+        evidence_labels = [item.label for item in self.label_evidence]
+        if len(evidence_labels) != len(set(evidence_labels)):
+            raise ValueError("label evidence labels must be unique")
+        if self.label_evidence and set(evidence_labels) != set(normalized):
+            raise ValueError("label_evidence must provide exactly one record for every predicted label")
         if self.confidence is not None and (
             isinstance(self.confidence, bool)
             or not isinstance(self.confidence, (int, float))
