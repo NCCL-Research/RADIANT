@@ -3,7 +3,7 @@ import json
 import pytest
 
 from radiant.datasets import load_attempts_jsonl, write_attempts_jsonl
-from radiant.schema import StudentAttempt
+from radiant.schema import ReferenceDiagnosis, StudentAttempt
 
 
 def attempt(attempt_id: str = "a1") -> StudentAttempt:
@@ -99,7 +99,6 @@ def test_loader_rejects_non_array_reference_evidence_spans(tmp_path) -> None:
         load_attempts_jsonl(path)
 
 
-from radiant.schema import ReferenceDiagnosis
 
 
 def test_multilabel_reference_annotations_round_trip(tmp_path) -> None:
